@@ -1,0 +1,271 @@
+---
+title: "Домашнее задание 2"
+author: "Вискер Я. Ю."
+date: "2025-04-27"
+output: html_document
+---
+Задание 1.Создайте регрессионную модель (или несколько моделей), которая описывала бы связь:
+среднего радиуса опухоли и средней площади;
+среднего периметра;
+средней симметричности.
+Постройте график (или графики, если моделей несколько), на котором отразите регрессионную прямую, и прокомментируйте свои находки.
+
+
+```{r}
+# Установка и загрузка необходимых пакетов
+install.packages("mlbench")
+library(mlbench)
+library(ggplot2)
+```
+```{r}
+# Загрузка данных
+data <- read.csv('wisconsin_breast_cancer.csv')
+```
+
+```{r}
+# Регрессионная модель для среднего радиуса и средней площади
+model_radius_area <- lm(area_mean ~ radius_mean, data = data)
+
+# График
+ggplot(data, aes(x = radius_mean, y = area_mean)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(title = "Регрессия: Средний радиус vs Средняя площадь",
+       x = "Средний радиус",
+       y = "Средняя площадь")
+
+```
+
+```{r}
+# Оценка качества модели
+
+# 1. R-квадрат
+r_squared <- summary(model_radius_area)$r.squared
+cat("R-квадрат:", r_squared, "\n")
+
+# 2. AIC и BIC
+aic_value <- AIC(model_radius_area)
+bic_value <- BIC(model_radius_area)
+cat("AIC:", aic_value, "\n")
+cat("BIC:", bic_value, "\n")
+
+# 3. Анализ остатков
+par(mfrow = c(2, 2))
+plot(model_radius_area)
+
+# 4. Проверка нормальности остатков с помощью QQ-графика
+qqnorm(residuals(model_radius_area))
+qqline(residuals(model_radius_area), col = "red")
+
+# 5. Проверка гомоскедастичности (равномерности дисперсии остатков)
+plot(fitted(model_radius_area), residuals(model_radius_area))
+abline(h = 0, col = "red")
+title("Проверка гомоскедастичности")
+
+# 6. Проверка значимости коэффициентов
+summary(model_radius_area)$coefficients
+```
+У модели "model_radius_area" отмечается отличный показатель R2.
+
+```{r}
+# Регрессионная модель для среднего радиуса и среднего периметра
+model_radius_perimeter <- lm(perimeter_mean ~ radius_mean, data = data)
+
+# График
+ggplot(data, aes(x = radius_mean, y = perimeter_mean)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "red") +
+  labs(title = "Регрессия: Средний радиус vs Средний периметр",
+       x = "Средний радиус",
+       y = "Средний периметр")
+r_squared <- summary(model_radius_perimeter)$r.squared
+cat("R-квадрат:", r_squared, "\n")
+```
+
+```{r}
+# Оценка качества модели
+
+# 1. R-квадрат
+r_squared <- summary(model_radius_perimeter)$r.squared
+cat("R-квадрат:", r_squared, "\n")
+
+# 2. AIC и BIC
+aic_value <- AIC(model_radius_perimeter)
+bic_value <- BIC(model_radius_perimeter)
+cat("AIC:", aic_value, "\n")
+cat("BIC:", bic_value, "\n")
+
+# 3. Анализ остатков
+par(mfrow = c(2, 2))
+plot(model_radius_perimeter)
+
+# 4. Проверка нормальности остатков с помощью QQ-графика
+qqnorm(residuals(model_radius_perimeter))
+qqline(residuals(model_radius_perimeter), col = "red")
+
+# 5. Проверка гомоскедастичности (равномерности дисперсии остатков)
+plot(fitted(model_radius_perimeter), residuals(model_radius_perimeter))
+abline(h = 0, col = "red")
+title("Проверка гомоскедастичности")
+
+# 6. Проверка значимости коэффициентов
+summary(model_radius_perimeter)$coefficients
+```
+У модели "model_radius_perimeter" отмечается отличный показатель R2.
+
+```{r}
+# Регрессионная модель для среднего радиуса и средней симметрии
+model_radius_symmetry <- lm(symmetry_mean ~ radius_mean, data =data)
+
+# График
+ggplot(data, aes(x = radius_mean, y = symmetry_mean)) +
+  geom_point() +
+  geom_smooth(method = "lm", col = "green") +
+  labs(title = "Регрессия: Средний радиус vs Средняя симметрия",
+       x = "Средний радиус",
+       y = "Средняя симметрия")
+
+```
+
+```{r}
+# Вывод результатов модели
+summary(model_radius_symmetry)
+
+# Оценка качества модели
+
+# 1. R-квадрат
+r_squared <- summary(model_radius_symmetry)$r.squared
+cat("R-квадрат:", r_squared, "\n")
+
+# 2. AIC и BIC
+aic_value <- AIC(model_radius_symmetry)
+bic_value <- BIC(model_radius_symmetry)
+cat("AIC:", aic_value, "\n")
+cat("BIC:", bic_value, "\n")
+
+# 3. Анализ остатков
+par(mfrow = c(2, 2))
+plot(model_radius_symmetry)
+
+# 4. Проверка нормальности остатков с помощью QQ-графика
+qqnorm(residuals(model_radius_symmetry))
+qqline(residuals(model_radius_symmetry), col = "red")
+
+# 5. Проверка гомоскедастичности (равномерности дисперсии остатков)
+plot(fitted(model_radius_symmetry), residuals(model_radius_symmetry))
+abline(h = 0, col = "red")
+title("Проверка гомоскедастичности")
+
+# 6. Проверка значимости коэффициентов
+summary(model_radius_symmetry)$coefficients
+```
+Модель "model_radius_symmetry" работает не очень хорошо, отмечается низкий R2.
+
+
+
+
+
+
+Задание 2. Пусть колонка с диагнозом принимает следующие значения: злокачественная опухоль (M) — 1, а доброкачественная (B) — 0. Постройте модель (или несколько моделей), которая прогнозировала бы вероятность возникновения злокачественной опухоли:
+от среднего радиуса;
+средней площади;
+средней текстуры.
+Постройте графики. Создайте модель, которая бы прогнозировала вероятность возникновения злокачественной опухоли от всех трех перечисленных факторов.
+```{r}
+data$Class <- ifelse(data$diagnosis == "M", 1, 0)
+```
+
+
+```{r}
+# Логистическая регрессия от среднего радиуса
+logit_radius <- glm(Class ~ radius_mean, data = data, family = binomial)
+summary(logit_radius)
+
+# График вероятностей
+data$predicted_prob_radius <- predict(logit_radius, type="response")
+ggplot(data, aes(x=radius_mean, y=predicted_prob_radius)) +
+  geom_line(color="blue") +
+  labs(title="Вероятность злокачественной опухоли от среднего радиуса",
+       x="Средний радиус",
+       y="Вероятность (M=1)")
+```
+
+```{r}
+# Логистическая регрессия от средней площади
+logit_area <- glm(Class ~ area_mean, data=data, family=binomial)
+summary(logit_area)
+
+# График вероятностей
+data$predicted_prob_area <- predict(logit_area, type="response")
+ggplot(data, aes(x=area_mean, y=predicted_prob_area)) +
+  geom_line(color="red") +
+  labs(title="Вероятность злокачественной опухоли от средней площади",
+       x="Средняя площадь",
+       y="Вероятность (M=1)")
+```
+
+```{r}
+# Логистическая регрессия от средней текстуры
+logit_texture <- glm(Class ~ texture_mean, data=data, family=binomial)
+summary(logit_texture)
+
+# График вероятностей
+data$predicted_prob_texture <- predict(logit_texture, type="response")
+ggplot(data, aes(x=texture_mean, y=predicted_prob_texture)) +
+  geom_line(color="green") +
+  labs(title="Вероятность злокачественной опухоли от средней текстуры",
+       x="Средняя текстура",
+       y="Вероятность (M=1)")
+```
+
+```{r}
+# Модель с тремя факторами
+logit_all_factors <- glm(Class ~ radius_mean + area_mean + texture_mean,
+                          data=data,
+                          family=binomial)
+summary(logit_all_factors)
+```
+
+Задание 3. Рассчитайте выборку для гипотезы equality для следующего исследования. Мы хотим сравнить новую терапию инфекции, присоединяющейся в больничных условиях у пациентов с ожогами, с золотым стандартом, основываясь на данных, анализируемых с помощью регрессии Кокса. Пусть отношение рисков «золотой стандарт / новая терапия», hazard ratio, HR = 2. Мы предполагаем, что 80% пациентов (d = 0,8) могут столкнуться с этим заболеванием. Соотношения групп терапии равны (p1 = p2 = 0,5).
+
+```{r}
+# Установка параметров
+HR <- 2  # Отношение рисков
+d <- 0.8  # Доля пациентов
+p1 <- p2 <- 0.5  # Соотношения групп терапии
+
+# Z-значения
+alpha <- 0.05  # Уровень значимости
+power <- 0.8   # Мощность теста
+
+# Z-значения для двухстороннего теста
+Z_alpha_half <- qnorm(1 - alpha / 2)  # Z/2
+Z_power <- qnorm(power)                 # Z
+
+# Расчет n1 и n2
+n1 <- n2 <- ((Z_alpha_half + Z_power)^2 * (log(HR)^2) * p1 * p2 * d)
+
+# Общее количество участников
+n_total <- ceiling(n1 + n2)
+
+# Вывод результатов
+cat("Размер выборки для каждой группы (n1 и n2):", ceiling(n1), "\n")
+cat("Общий размер выборки (n):", n_total, "\n")
+```
+Подозрительно мало, возьмем другую формулу
+
+```{r}
+HR <- 2
+d <- 0.8
+p1 <- p2 <- 0.5
+
+n1 <- n2 <- ((qnorm(0.975) + qnorm(0.8))^2 * (p1 * (1 - p1) + p2 * (1 - p2))) / ((log(HR))^2)
+
+total_sample_size <- ceiling(n1 + n2)
+total_sample_size
+```
+
+
+
+
+
